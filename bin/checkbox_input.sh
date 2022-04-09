@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ### IMPORT_COMMON ###
 SOURCE="${BASH_SOURCE[0]}"

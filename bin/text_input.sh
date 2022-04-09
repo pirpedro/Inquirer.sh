@@ -1,13 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ### IMPORT_COMMON ###
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
-  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
   SOURCE="$(readlink "$SOURCE")"
   [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
-DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 
 source $DIR/inquirer_common.sh
 ### IMPORT_END ###
@@ -16,7 +16,7 @@ on_text_input_left() {
   remove_regex_failed
   if [ $_current_pos -gt 0 ]; then
     tput cub1
-    _current_pos=$(($_current_pos-1))
+    _current_pos=$(($_current_pos - 1))
   fi
 }
 
@@ -24,7 +24,7 @@ on_text_input_right() {
   remove_regex_failed
   if [ $_current_pos -lt ${#_text_input} ]; then
     tput cuf1
-    _current_pos=$(($_current_pos+1))
+    _current_pos=$(($_current_pos + 1))
   fi
 }
 
@@ -33,7 +33,7 @@ on_text_input_enter() {
 
   if [[ "$_text_input" =~ $_text_input_regex && "$(eval $_text_input_validator "$_text_input")" = true ]]; then
     tput cub "$(tput cols)"
-    tput cuf $((${#_read_prompt}-19))
+    tput cuf $((${#_read_prompt} - 19))
     printf "${cyan}${_text_input}${normal}"
     tput el
     tput cud1
@@ -50,7 +50,7 @@ on_text_input_enter() {
     printf "${red}>>${normal} $_text_input_regex_failed_msg"
     tput cuu1
     tput cub "$(tput cols)"
-    tput cuf $((${#_read_prompt}-19))
+    tput cuf $((${#_read_prompt} - 19))
     tput el
     _text_input=""
     _current_pos=0
@@ -68,7 +68,7 @@ on_text_input_ascii() {
 
   local rest="${_text_input:$_current_pos}"
   _text_input="${_text_input:0:$_current_pos}$c$rest"
-  _current_pos=$(($_current_pos+1))
+  _current_pos=$(($_current_pos + 1))
 
   tput civis
   printf "$c$rest"
@@ -82,9 +82,9 @@ on_text_input_ascii() {
 on_text_input_backspace() {
   remove_regex_failed
   if [ $_current_pos -gt 0 ]; then
-    local start="${_text_input:0:$(($_current_pos-1))}"
+    local start="${_text_input:0:$(($_current_pos - 1))}"
     local rest="${_text_input:$_current_pos}"
-    _current_pos=$(($_current_pos-1))
+    _current_pos=$(($_current_pos - 1))
     tput cub 1
     tput el
     tput sc
@@ -106,7 +106,7 @@ remove_regex_failed() {
 }
 
 text_input_default_validator() {
-  echo true;
+  echo true
 }
 
 text_input() {
@@ -117,12 +117,11 @@ text_input() {
   local _text_input_validator=${5:-text_input_default_validator}
   local _read_prompt_start=$'\e[32m?\e[39m\e[1m'
   local _read_prompt_end=$'\e[22m'
-  local _read_prompt="$( echo "$_read_prompt_start ${prompt} $_read_prompt_end")"
+  local _read_prompt="$(echo "$_read_prompt_start ${prompt} $_read_prompt_end")"
   local _current_pos=0
   local _text_input_regex_failed=false
   local _text_input=""
   printf "$_read_prompt"
-
 
   trap control_c SIGINT EXIT
 
